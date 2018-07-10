@@ -41,14 +41,14 @@ namespace OrderManagement.Tests
             var response = await client.PostAsJsonAsync("api/v1/basket/InitializeSameAddress"
                                                  , new InitializeSameAddressRequest()
                                                  {
-                                                      Client = new Client()
-                                                      {
-                                                          FirstName = "John",
-                                                          LastName = "Doe",
-                                                          ClientCode = "4829",
-                                                          BirthDate = DateTime.Now.Date.AddDays(-9600),
-                                                          Gender = Gender.Male,
-                                                          Contacts = new List<Contact>()
+                                                     Client = new Client()
+                                                     {
+                                                         FirstName = "John",
+                                                         LastName = "Doe",
+                                                         ClientCode = "4829",
+                                                         BirthDate = DateTime.Now.Date.AddDays(-9600),
+                                                         Gender = Gender.Male,
+                                                         Contacts = new List<Contact>()
                                                           {
                                                               new Contact()
                                                               {
@@ -56,16 +56,17 @@ namespace OrderManagement.Tests
                                                                   Value = "test@test.test"
                                                               }
                                                           }
-                                                      },
-                                                      Address = new Address()
-                                                              {  Country="DE",
-                                                                 City ="Berlin",
-                                                                 AddressLine = "Wittenauer Straße",
-                                                                 State = "Berlin zzz",
-                                                                 Zip = "10115"
-                                                              },
-                                                      CurrencyCode="EUR",
-                                                      DiscountRate=0.1m
+                                                     },
+                                                     Address = new Address()
+                                                     {
+                                                         Country = "DE",
+                                                         City = "Berlin",
+                                                         AddressLine = "Wittenauer Straße",
+                                                         State = "Berlin zzz",
+                                                         Zip = "10115"
+                                                     },
+                                                     CurrencyCode = "EUR",
+                                                     DiscountRate = 0.1m
                                                  }
             );
             string result = await response.Content.ReadAsStringAsync();
@@ -76,11 +77,11 @@ namespace OrderManagement.Tests
 
                 await client.PostAsJsonAsync($"api/v1/basket/{orderData.orderId}/Add", new AddRequest() { ProductCode = "PRODUCT-1", Quantity = 2 });
                 await client.PostAsJsonAsync($"api/v1/basket/{orderData.orderId}/Add", new AddRequest() { ProductCode = "PRODUCT-2", Quantity = 3 });
-                await client.PutAsJsonAsync($"api/v1/basket/{orderData.orderId}/SetQuantity/PRODUCT-2", 2 );
+                await client.PutAsJsonAsync($"api/v1/basket/{orderData.orderId}/SetQuantity/PRODUCT-2", 2);
 
                 var basketResponse = await client.GetAsync($"api/v1/basket/{orderData.orderId}");
 
-                if((int)basketResponse.StatusCode == StatusCodes.Status200OK)
+                if ((int)basketResponse.StatusCode == StatusCodes.Status200OK)
                 {
                     var temp = await basketResponse.Content.ReadAsStringAsync();
                     var order = JsonConvert.DeserializeObject<Order>(temp);
@@ -91,5 +92,12 @@ namespace OrderManagement.Tests
             else Assert.True(false, "Order not created.");
         }
 
-   }
+        [Fact]
+        public async Task ClearOut_Test()
+        {
+            var client = _factory.CreateClient();
+            var response = await client.DeleteAsync ("api/v1/basket/1/ClearOut");
+            Assert.Equal((int)response.StatusCode, StatusCodes.Status200OK);
+        }
+    }
 }

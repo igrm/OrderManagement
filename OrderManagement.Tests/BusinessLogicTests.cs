@@ -25,13 +25,13 @@ namespace OrderManagement.Tests
             var context = new OrderContext(optionsBuilder.Options);
             SeedTestData(context);
             _orderService = new OrderService(
-                                 new OrderRepository(context), 
-                                 new OrderLineRepository(context), 
+                                 new OrderRepository(context),
+                                 new OrderLineRepository(context),
                                  new ClientRepository(context),
-                                 new AddressRepository(context), 
-                                 new CurrencyRepository(context), 
-                                 new UnitOfWork(context), 
-                                 new ConfigurationService(config), 
+                                 new AddressRepository(context),
+                                 new CurrencyRepository(context),
+                                 new UnitOfWork(context),
+                                 new ConfigurationService(config),
                                  new CompletionService(new OrderRepository(context)),
                                  new ProductRepository(context));
         }
@@ -78,7 +78,18 @@ namespace OrderManagement.Tests
             _orderService.Add(id, "PRODUCT-1", 10);
             _orderService.SetQuantity(id, "PRODUCT-1", 100);
             var order = _orderService.GetOrder(id);
-            Assert.Equal(100, order.OrderLines.Sum(x=>x.Quantity));
+            Assert.Equal(100, order.OrderLines.Sum(x => x.Quantity));
+        }
+
+        [Fact]
+        public void ClearOut_Test()
+        {
+            var id = _orderService.Initialize(new Client() { ClientCode = "CLIENT-1" }, new Address() { Country = "EE" }, PaymentMethod.WireTransfer, "EUR", 0.10m);
+            _orderService.Add(id, "PRODUCT-1", 10);
+            _orderService.SetQuantity(id, "PRODUCT-1", 100);
+            _orderService.ClearOut(id);
+            var order = _orderService.GetOrder(id);
+            Assert.Empty(order.OrderLines);
         }
     }
 }

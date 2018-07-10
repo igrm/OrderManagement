@@ -15,7 +15,9 @@ namespace OrderManagement.Services
         void Remove(int orderId, string productCode);
         void SetQuantity(int orderId, string productCode, uint quantity);
         void Complete(int orderId);
+        void ClearOut(int orderId);
         Order GetOrder(int orderId);
         IEnumerable<Order> GetOrders();
+        
     }
 }

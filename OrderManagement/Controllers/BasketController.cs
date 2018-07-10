@@ -168,5 +168,16 @@ namespace OrderManagement.Controllers
                 });
             return BadRequest(GetValidationMessages());
         }
+
+        [HttpDelete("{orderId:int}/[action]")]
+        public ActionResult ClearOut(int orderId)
+        {
+            if (ModelState.IsValid)
+                return Manipulate(() => {
+                    _logger.LogInformation("Clearing out items from order: {orderId}", orderId);
+                    _orderService.ClearOut(orderId);
+                });
+            return BadRequest(GetValidationMessages());
+        }
     }
 }

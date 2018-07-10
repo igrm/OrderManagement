@@ -163,6 +163,30 @@ namespace OrderManagement.Services
             }
         }
 
+        public void ClearOut(int orderId)
+        {
+            using (var transaction = new TransactionScope())
+            {
+                var order = _orderRepository.Get(x => x.OrderId == orderId);
+                if (order == null)
+                    throw new OrderNotFoundException();
+                if (order.OrderLines == null)
+                    throw new ProductNotFoundException();
+
+                foreach(var orderLine in order.OrderLines)
+                {
+                    _orderLineRepository.Delete(orderLine);
+                }
+
+                order.OrderLines.Clear();
+                _orderRepository.Update(order);
+
+                _unitOfWork.Commit();
+
+                transaction.Complete();
+            }
+        }
+
         public Order GetOrder(int orderId)
         {
             return _orderRepository.Get(x => x.OrderId == orderId);
