@@ -1,0 +1,25 @@
+﻿{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [ "**/*.csproj" ],
+          "exclude": [ "**/bin/**", "**/obj/**" ],
+          "src": "."
+        }
+      ],
+      "dest": "obj/docfx/api/OrderManagement",
+      "shouldSkipMarkup": true
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "obj/docfx/api/OrderManagement/*.yml"
+        ]
+      }
+    ],
+    "dest": "wwwroot"
+  }
+}

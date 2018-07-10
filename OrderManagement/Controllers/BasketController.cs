@@ -13,6 +13,10 @@ using OrderManagement.Services;
 
 namespace OrderManagement.Controllers
 {
+    /// <summary>  
+    ///  Class implements of Basket API.
+    ///  Exposes service endoints.
+    /// </summary>
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -22,6 +26,11 @@ namespace OrderManagement.Controllers
         private readonly IOrderService _orderService;
         private readonly ILogger _logger;
 
+        /// <summary>
+        /// BasketController constructor.
+        /// </summary>
+        /// <param name="orderService">IOrderService implementation interface implementation</param>
+        /// <param name="logger">Logger implementation interface implementation</param>
         public BasketController(IOrderService orderService, ILogger<BasketController> logger)
         {
             _orderService = orderService;
@@ -77,6 +86,9 @@ namespace OrderManagement.Controllers
             return String.Join("; ", ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage));
         }
 
+        /// <summary>
+        /// Get a list of initialized orders.
+        /// </summary>
         [HttpGet()]
         public ActionResult<IEnumerable<Order>> Get()
         {
@@ -86,6 +98,10 @@ namespace OrderManagement.Controllers
             return orders.ToList();
         }
 
+        /// <summary>
+        /// Get order details.
+        /// </summary>
+        /// <param name="orderId">Identifier of initialized order.</param>
         [HttpGet("{orderId:int}")]
         public ActionResult<Order> Get(int orderId)
         {
@@ -100,6 +116,10 @@ namespace OrderManagement.Controllers
             return BadRequest(GetValidationMessages());
         }
 
+        /// <summary>
+        /// Initializes the order using the same address for both billing and shipping addresses.
+        /// </summary>
+        /// <param name="request">Initialization request with filled data.</param>
         [HttpPost("[action]")]
         public ActionResult<object> InitializeSameAddress(InitializeSameAddressRequest request)
         {
@@ -113,6 +133,10 @@ namespace OrderManagement.Controllers
             return BadRequest(GetValidationMessages());
         }
 
+        /// <summary>
+        /// Initializes the order using separate billing and shipping addresses.
+        /// </summary>
+        /// <param name="request">Initialization request with filled data.</param>
         [HttpPost("[action]")]
         public ActionResult<object> InitializeSeparateAddresses(InitializeSeparateAddressesRequest request)
         {
@@ -125,6 +149,11 @@ namespace OrderManagement.Controllers
             return BadRequest(GetValidationMessages());
         }
 
+        /// <summary>
+        /// Add a product to an order.
+        /// </summary>
+        /// <param name="orderId">Identifier of initialized order.</param>
+        /// <param name="request">Request for adding product to the order.</param>
         [HttpPost("{orderId:int}/[action]")]
         public ActionResult Add(int orderId, [FromBody] AddRequest request)
         {
@@ -136,6 +165,11 @@ namespace OrderManagement.Controllers
             return BadRequest(GetValidationMessages());
         }
 
+        /// <summary>
+        /// Remove product from an order
+        /// </summary>
+        /// <param name="orderId">Identifier of initialized order.</param>
+        /// <param name="productCode">Product code to remove.</param>
         [HttpDelete("{orderId:int}/[action]/{productCode}")]
         public ActionResult Remove(int orderId, [FromBody] string productCode)
         {
@@ -147,6 +181,12 @@ namespace OrderManagement.Controllers
             return BadRequest(GetValidationMessages());
         }
 
+        /// <summary>
+        /// Sets the quantity for product in order.
+        /// </summary>
+        /// <param name="orderId">Identifier of initialized order.</param>
+        /// <param name="productCode">Product code to remove.</param>
+        /// <param name="quantity">Number of product items.</param>
         [HttpPut("{orderId:int}/[action]/{productCode}")]
         public ActionResult SetQuantity(int orderId, string productCode, [FromBody] uint quantity)
         {
@@ -158,6 +198,10 @@ namespace OrderManagement.Controllers
             return BadRequest(GetValidationMessages());
         }
 
+        /// <summary>
+        /// Complete the order.
+        /// </summary>
+        /// <param name="orderId">Identifier of initialized order.</param>
         [HttpPost("{orderId:int}/[action]")]
         public ActionResult Complete(int orderId)
         {
@@ -169,6 +213,10 @@ namespace OrderManagement.Controllers
             return BadRequest(GetValidationMessages());
         }
 
+        /// <summary>
+        /// Clear out order data.
+        /// </summary>
+        /// <param name="orderId">Identifier of initialized order.</param>
         [HttpDelete("{orderId:int}/[action]")]
         public ActionResult ClearOut(int orderId)
         {
